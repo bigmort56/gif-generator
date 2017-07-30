@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <title>Random Gif Generator</title>
+</head>
+
+<body>
+  <div id="buttons">
+  </div>
+  
+  <aside>
+    <form>
+       <h1>Add an animal here: </h1>
+       <input type="text" name="buttonName" value="" id="inputBox"><br>
+       
+       <input type="submit" value="Submit" id="submitBtn">
+    
+    </form>
+   </aside> 
+
+  <div id="gifs-here">
+  </div>
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+ 
+
+  <script type="text/javascript">
+   $(document).ready(function(){
+      var animals = ["dog", "cat", "horse", "dolphin", "whale", "shark", "hedgehog"];    
+
+    function buttonCreator () {
+       for ( var j = 0; j < animals.length; j++) {
+        var animalBtn = $("<button>").text(animals[j]);
+
+        $("#buttons").append(animalBtn);
+       }
+    }
+
+      buttonCreator();
+
+
+    $("button").on("click", function() {
+      
+    
+      var input = animals[j];
+      var queryURL = "https://api.giphy.com/v1/gifs/search?q=" +
+        input + "&api_key=dc6zaTOxFJmzC&limit=10";
+
+      $.ajax({
+          url: queryURL,
+          method: "GET"
+        })
+        .done(function(response) {
+          var results = response.data;
+
+          for (var i = 0; i < results.length; i++) {
+            var gifDiv = $("<div class='item'>");
+
+            var rating = results[i].rating;
+
+            var p = $("<p>").text("Rating: " + rating);
+
+            var animalImage = $("<img>");
+            animalImage.attr("src", results[i].images.fixed_height.url);
+
+            gifDiv.prepend(p);
+            gifDiv.prepend(animalImage);
+
+            $("#gifs-here").prepend(gifDiv);
+          }
+        });
+    
+  });
+
+  
+
+
+  
+
+  $("#submitBtn").on("click", function(){
+    $("#buttons").clear();
+
+    var inputValue = $("input:text").val();
+
+    animals.push(inputValue);
+
+    buttonCreator();    
+  });
+  });
+  </script>
+</body>
+
+</html>
+
+<!-- I can get the buttons to generate gifs, but not ones specific to the button pressed.  Also for some reason it doesnt limit the gifs to just 10. I can get the loop to generate the buttons at the beggining of the page. But I cant get the input box to then generate a new button with the name on it. It just adds the input info right onto the url.-->
